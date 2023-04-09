@@ -32,9 +32,12 @@ public class Login extends AppCompatActivity {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser != null){
-            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-            startActivity(intent);
-            finish();
+            if(currentUser.isEmailVerified())
+            {
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                startActivity(intent);
+                finish();
+            }
         }
     }
 
@@ -79,22 +82,47 @@ public class Login extends AppCompatActivity {
                     return;
                 }
 
+//                mAuth.signInWithEmailAndPassword(email, password)
+//                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+//                            @Override
+//                            public void onComplete(@NonNull Task<AuthResult> task) {
+//                                if (task.isSuccessful()) {
+//                                    Toast.makeText(Login.this, "Login successful.",
+//                                            Toast.LENGTH_SHORT).show();
+//                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                                    startActivity(intent);
+//                                    finish();
+//                                } else {
+//                                    Toast.makeText(Login.this, "Authentication failed",
+//                                            Toast.LENGTH_SHORT).show();
+//                                }
+//                            }
+//                        });
+
                 mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                if (task.isSuccessful()) {
+                        .addOnCompleteListener(task ->  {
+                            if (task.isSuccessful()) {
+                                FirebaseAuth auth = FirebaseAuth.getInstance();
+                                FirebaseUser user = auth.getCurrentUser();
+                                if(user.isEmailVerified())
+                                {
                                     Toast.makeText(Login.this, "Login successful.",
                                             Toast.LENGTH_SHORT).show();
                                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                                     startActivity(intent);
                                     finish();
-                                } else {
-                                    Toast.makeText(Login.this, "Authentication failed",
+                                }
+                                else
+                                {
+                                    Toast.makeText(Login.this, "Please verify your email!",
                                             Toast.LENGTH_SHORT).show();
                                 }
+                            } else {
+                                Toast.makeText(Login.this, "Authentication failed",
+                                        Toast.LENGTH_SHORT).show();
                             }
                         });
+
             }
         });
 
