@@ -1,0 +1,71 @@
+buildscript {
+    repositories {
+        google() // necessary as this plugin depends on the android gradle api
+        gradlePluginPortal() // where this plugin is hosted
+    }
+    dependencies {
+        classpath 'gradle.plugin.com.github.sgtsilvio.gradle:android-retrofix:0.3.6'
+        classpath 'com.google.gms:google-services:4.3.15'
+    }
+}
+
+plugins {
+    id 'com.android.application'
+    id 'com.google.gms.google-services'
+}
+
+apply plugin: 'com.android.application' // mandatory for android apps
+
+android {
+    compileSdkVersion 33
+    buildToolsVersion "30.0.3"
+
+    defaultConfig {
+        applicationId "com.example.myapplication"
+        minSdkVersion 19
+        targetSdkVersion 33
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        // https://stackoverflow.com/questions/51341627/android-gives-error-cannot-fit-requested-classes-in-a-single-dex-file
+        multiDexEnabled true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/INDEX.LIST', 'META-INF/io.netty.versions.properties']
+        }
+    }
+    namespace 'com.example.myapplication'
+}
+
+dependencies {
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'com.google.android.material:material:1.8.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'com.google.firebase:firebase-auth-ktx:21.2.0'
+    testImplementation 'junit:junit:4.+'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+
+    implementation 'com.hivemq:hivemq-mqtt-client:1.2.2'
+
+    implementation 'net.sourceforge.streamsupport:android-retrostreams:1.7.2'
+    implementation 'net.sourceforge.streamsupport:android-retrofuture:1.7.2'
+
+    // https://stackoverflow.com/questions/51341627/android-gives-error-cannot-fit-requested-classes-in-a-single-dex-file
+    implementation 'androidx.multidex:multidex:2.0.1'
+}
