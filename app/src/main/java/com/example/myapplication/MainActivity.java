@@ -25,9 +25,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.Random;
 public class MainActivity extends AppCompatActivity {
 
+    FirebaseAuth auth = FirebaseAuth.getInstance();
+    FirebaseUser user = auth.getCurrentUser();
+
     // Define variables
     boolean Is_Light_On = true;
-    public String Topic = "status";
+    public String Topic = String.valueOf(user.getEmail());
     public String subMess = "";
     public int statusDevice;
 
